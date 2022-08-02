@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Webpage Title -->
+    <title>
+        {% block title %}
+        TITLE
+        {% endblock %}
+    </title>
+    <!--    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">-->
+    <!--    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">-->
+    <meta property="og:title" content="여기 버려"/>
+    <meta property="og:description" content="mini project"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <script src="https://kit.fontawesome.com/15cc769352.js" crossorigin="anonymous"></script>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Stylish&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+</head>
+<body>
+
+<section class="hero is-white">
+    <div class="hero-body has-text-centered">
+        <h1 class="title">여기 버려</h1>
+        <h3 class="subtitle">쓰레기통 위치 정보 시스템</h3>
+    </div>
+</section>
+
+<nav class="navbar is-transparent" id="nav-main">
+    <div class="navbar-menu">
+        <div class="navbar-end">
+            {% if 'mytoken' %}
+            <div class="navbar-item">
+                <div class="field is-grouped">
+                    <p class="control" id="link-mypage">
+                        <a class="button" href="/user/{{ user_info.username }}"><span>마이페이지</span></a>
+                    </p>
+                    <p class="control is-hidden" id="link-home">
+                        <a class="button" href="/"><span>메인으로</span></a>
+                    </p>
+
+                    <p class="control">
+                        <button class="button" onclick="logout()"><span>로그아웃</span></button>
+                    </p>
+                </div>
+            </div>
+            {% else %}
+            <div class="navbar-item">
+                <div class="field is-grouped">
+                    <p class="control">
+                        <a class="button" href="/login"><span>회원가입</span></a>
+                    </p>
+                    <p class="control">
+                        <a class="button" href="/login"><span>로그인</span></a>
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+
+        </div>
+    </div>
+    </div>
+</nav>
+{% block content %}
+{% endblock %}
+
+<footer>
+    copyright by 이노베이션 캠프 in 서울 15조
+</footer>
+</body>
+
+</html>

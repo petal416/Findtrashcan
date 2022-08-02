@@ -1,10 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}여기 버려{% endblock %}
+{% block content %}
 
-</body>
-</html>
+<section>
+    <!--    검색 창-->
+    <div class="columns is-justify-content-center m-3">
+        <!-- 구 선택-->
+        <div class="column is-3 ">
+            <div class="control has-icons-left">
+                <div class="select is-medium" id="select-gu">
+                    <label>
+                        <select>
+                            <option selected>구 선택</option>
+                            <option>전체</option>
+                            <option>강남구</option>
+                            <option>강동구</option>
+                            <option>강북구</option>
+                            <option>강서구</option>
+                            <option>관악구</option>
+                            <option>광진구</option>
+                            <option>구로구</option>
+                            <option>금천구</option>
+                            <option>노원구</option>
+                            <option>도봉구</option>
+                            <option>동대문구</option>
+                            <option>동작구</option>
+                            <option>마포구</option>
+                            <option>서대문구</option>
+                            <option>서초구</option>
+                            <option>성동구</option>
+                            <option>성북구</option>
+                            <option>송파구</option>
+                            <option>양천구</option>
+                            <option>영등포구</option>
+                            <option>용산구</option>
+                            <option>은평구</option>
+                            <option>종로구</option>
+                            <option>중구</option>
+                            <option>중랑구</option>
+                        </select>
+                    </label>
+                </div>
+                <span class="icon is-medium is-left"><i class="fa-solid fa-location-dot"></i></span>
+            </div>
+        </div>
+        <!--검색-->
+        <div class="column is-3">
+            <button class="button" onclick="search_trashcan()">검색</button>
+        </div>
+    </div>
+    <!--검색 결과-->
+    <div class="box map m-5">
+        검색 결과 -> 지도로 표시
+    </div>
+
+
+</section>
+
+{% block script %}
+<script>
+    <!--script 는 여기에-->
+    function search_trashcan() {
+        let gu = $("#select-gu option:selected").val()
+        console.log(`검색한 구는 ${gu}`)
+
+    }
+</script>
+{% endblock %}
+{% endblock %}

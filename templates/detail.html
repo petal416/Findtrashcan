@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+<!--타이틀 위치-->
+{% block title %}상세 페이지{% endblock %}
+
+{% block content %}
+
+
+<div class="box m-4">
+    <h2 class="m-1">리뷰</h2>
+    <div class="columns m-1">
+        <div class="column is-2">
+            <!-- 점수 체크-->
+            <div class="select is-normal" id="select-rate">
+                <label>
+                    <select>
+                        <option>별점</option>
+                        <option>⭐⭐⭐⭐⭐</option>
+                        <option>⭐⭐⭐⭐</option>
+                        <option>⭐⭐⭐</option>
+                        <option>⭐⭐</option>
+                        <option>⭐</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        <div class="column">
+            <!-- 리뷰 입력-->
+            <label>
+                <input class="input is-normal" type="text" placeholder="리뷰를 입력하세요." id="input-review">
+            </label>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column is-three-quarters">
+        </div>
+        <div class="is-one-quarter">
+            <a class="button is-sparta" onclick="add_review()">리뷰 남기기</a>
+        </div>
+    </div>
+
+</div>
+
+
+    {% block script %}
+    <script>
+
+    </script>
+    {% endblock %}
+
+{% endblock %}
