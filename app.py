@@ -10,12 +10,10 @@ app = Flask(__name__)
 
 ca = certifi.where()
 
-# client = MongoClient('mongodb+srv://test:sparta@cluster0.72mx2.mongodb.net/Cluster0?retryWrites=true&w=majority',
-#                      tlsCAFile=ca)
-# db = client.dbsparta
+client = MongoClient('mongodb+srv://test:sparta@cluster0.72mx2.mongodb.net/Cluster0?retryWrites=true&w=majority',
+                     tlsCAFile=ca)
+db = client.dbsparta
 
-client = MongoClient('mongodb+srv://test:sparta@cluster0.oid9w.mongodb.net/?retryWrites=true&w=majority')
-db = client.db_inno_week1
 
 SECRET_KEY = 'SPARTA'
 
