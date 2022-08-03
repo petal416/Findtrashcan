@@ -15,10 +15,11 @@ db = client.Findtrashcan
 
 SECRET_KEY = 'SPARTA'
 
+
 @app.route('/')
 def home():
     # DB에 있는 데이터를 읽어서 쓰레기통이 있는 자치구 리스트를 생성
-    all_trashcan = list(db.trashcan.find({},{'_id':False}))
+    all_trashcan = list(db.trashcan.find({}, {'_id': False}))
     gu_list = []
     for trashcan in all_trashcan:
         gu_list.append(trashcan['gu'])
@@ -87,9 +88,10 @@ def check_dup():
 
 
 @app.route("/detail/<address>")
-def detailInfo(address):
+def detail_info(address):
     print(address)
-    return render_template("detail.html")
+    detail_address = address
+    return render_template("detail.html", address=detail_address)
 
 
 @app.route('/user/<username>')
@@ -105,6 +107,35 @@ def user(username):
         return render_template('user.html', user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
+
+
+# 리뷰 추가
+@app.route('/reviewing', methods=['POST'])
+def add_review():
+    token_receive = request.cookies.get('mytoken')
+
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]})
+        trashcan_receive = request.form["trashcan_give"]
+        star_receive = request.form["star_give"]
+        review_receive = request.form["review_give"]
+        date_receive = request.form["date_give"]
+        print(date_receive)
+
+        doc = {
+            "username": user_info["username"],
+            "trashcan": trashcan_receive,
+            "star": star_receive,
+            "review": review_receive,
+            "date": date_receive
+        }
+
+        db.reviews.insert_one(doc)
+
+        return jsonify({'result': 'success', 'msg': '리뷰 등록 성공'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return jsonify({'result': 'fail', 'msg': '리뷰 등록 실패'})
 
 
 if __name__ == '__main__':
