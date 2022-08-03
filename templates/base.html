@@ -30,6 +30,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="{{ url_for('static', filename='myjs.js') }}"></script>
 
+    <!-- naver API -->
+    <script type="text/javascript"
+                src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=t1dsmry018&submodules=geocoder"></script>
+
+    {% block style %}
+    {% endblock %}
+
     {% block script %}
     {% endblock %}
 </head>
