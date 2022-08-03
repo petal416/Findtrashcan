@@ -12,7 +12,7 @@ ca = certifi.where()
 
 client = MongoClient('mongodb+srv://test:sparta@cluster0.72mx2.mongodb.net/Cluster0?retryWrites=true&w=majority',
                      tlsCAFile=ca)
-db = client.dbsparta
+db = client.Findtrashcan
 
 
 SECRET_KEY = 'SPARTA'
