@@ -2,60 +2,127 @@
 <!--타이틀 위치-->
 {% block title %}상세 페이지{% endblock %}
 
+{% block style %}
+<style>
+    .address-box {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #map {
+        width: 50%;
+        height: 30vh;
+        margin: 20px auto 20px auto;
+    }
+</style>
+{% endblock %}
+
 {% block script %}
-    <script>
-        $(document).ready(function () {
-            $("#hero-header").toggleClass("is-hidden")
-            $("#nav-logo").removeClass("is-hidden")
+<script>
+    let database = {{ data | safe }}
+    let y_cen = database['mapy']   // lat
+    let x_cen = database['mapx']  // long
+    let map;
 
-            get_trashcan_reviews("test")
-        })
-
-        function add_review() {
-            //쓰레기통 정보 수정 필요
-            let trashcan = "test"
-            let stars = $("#select-rate option:selected").val()
-            let review = $('#input-review').val()
-            let today = new Date().toISOString()
-            console.log(stars, review, today)
-
-            if (review === "") {
-                alert("리뷰 내용이 없습니다!")
-                return
-            }
-
-            $.ajax({
-                type: 'POST',
-                url: '/reviewing',
-                data: {
-                    trashcan_give: trashcan,
-                    star_give: stars,
-                    review_give: review,
-                    date_give: today,
-                },
-                success: function (response) {
-                    alert(response['msg'])
-                    window.location.reload()
+    $(document).ready(function () {
+        $("#hero-header").addClass("is-hidden")
+        $("#nav-logo").removeClass("is-hidden")
+        // 맵이 없을 경우만 생성
+        if (!map) {
+            map = new naver.maps.Map('map', {
+                center: new naver.maps.LatLng(y_cen, x_cen),
+                zoom: 15,
+                zoomControl: true,
+                zoomControlOptions: {
+                    style: naver.maps.ZoomControlStyle.SMALL,
+                    position: naver.maps.Position.TOP_RIGHT
                 }
-            })
+            });
         }
 
-        function get_trashcan_reviews(trashcanId) {
-            console.log(trashcanId)
-            $.ajax({
-                type: "GET",
-                url: `/get_trashcan_reviews?trashcan_give=${trashcanId}`,
-                data: {},
-                success: function (response) {
-                    let reviews = response["reviews"]
+        let marker = new naver.maps.Marker({
+            position: new naver.maps.LatLng(y_cen, x_cen),
+            map: map
+        })
+        //마커 이미지 변경
+        marker.setIcon({
+            url: "{{ url_for('static', filename='trash-can-regular.svg') }}",
+            size: new naver.maps.Size(22, 35),
+            scaledSize: new naver.maps.Size(22, 35),
+            origin: new naver.maps.Point(0, 0),
+            anchor: new naver.maps.Point(11, 35)
+        })
+        /************* 마커 이벤트 추가 *************/
+        //마우스 호버 이벤트
+        naver.maps.Event.addListener(marker, "mouseover", function (e) {
+            marker.setIcon({
+                url: "{{ url_for('static', filename='trash-can-solid.svg') }}",
+                size: new naver.maps.Size(22, 35),
+                scaledSize: new naver.maps.Size(22, 35),
+                origin: new naver.maps.Point(0, 0),
+                anchor: new naver.maps.Point(11, 35)
+            })
+        })
+        //마우스 언호버 이벤트
+        naver.maps.Event.addListener(marker, "mouseout", function (e) {
+            marker.setIcon({
+                url: "{{ url_for('static', filename='trash-can-regular.svg') }}",
+                size: new naver.maps.Size(22, 35),
+                scaledSize: new naver.maps.Size(22, 35),
+                origin: new naver.maps.Point(0, 0),
+                anchor: new naver.maps.Point(11, 35)
+            })
+        })
+        // get_trashcan_reviews("test")
+    })
 
-                    for (let i = 0; i < reviews.length; i++) {
-                        let review = reviews[i]
-                        let time_review = new Date(review["date"])
-                        let time_text = time_to_str(time_review)
+    function add_review() {
+        //쓰레기통 정보 수정 필요
+        let trashcan = "test"
+        let stars = $("#select-rate option:selected").val()
+        let review = $('#input-review').val()
+        let today = new Date().toISOString()
+        console.log(stars, review, today)
 
-                        let temp_html = ``
-                        temp_html = `<div class="box" id="${review["_id"]}">
+        if (review === "") {
+            alert("리뷰 내용이 없습니다!")
+            return
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/reviewing',
+            data: {
+                trashcan_give: trashcan,
+                star_give: stars,
+                review_give: review,
+                date_give: today,
+            },
+            success: function (response) {
+                alert(response['msg'])
+                window.location.reload()
+            }
+        })
+    }
+
+    function get_trashcan_reviews(trashcanId) {
+        console.log(trashcanId)
+        $.ajax({
+            type: "GET",
+            url: `/get_trashcan_reviews?trashcan_give=${trashcanId}`,
+            data: {},
+            success: function (response) {
+                let reviews = response["reviews"]
+
+                for (let i = 0; i < reviews.length; i++) {
+                    let review = reviews[i]
+                    let time_review = new Date(review["date"])
+                    let time_text = time_to_str(time_review)
+
+                    let temp_html = ``
+                    temp_html = `<div class="box" id="${review["_id"]}">
                                             <div class="columns">
                                                 <div class="column is-4">${review['username']}</div>
                                                 <div class="column is-4">${review['star']}</div>
@@ -66,71 +133,64 @@
                                             </div>
                                      </div>`
 
-                        $("#trashcan-review-box").append(temp_html)
-
-                    }
+                    $("#trashcan-review-box").append(temp_html)
 
                 }
-            })
-        }
 
-        function update_like() {
-
-
-        }
-
-    </script>
+            }
+        })
+    }
+</script>
 {% endblock %}
 
 {% block content %}
-    <section class="section">
-        <div class="box">
-            쓰레기통 정보
-            <div class="favorite">
-                <i class="fa-regular fa-bookmark"></i>
-                <button onclick="update_like()">
-                    <i class="fa-solid fa-bookmark"></i>
-
-                </button>
+<section class="section">
+    <div class="box">
+        <div class="address-box">
+            <div id="map"></div>
+            <div>
+                <h3>주소 : {{ address }}</h3>
             </div>
         </div>
-        <div class="box">
-            <h2 class="m-1">리뷰 작성</h2>
-            <div class="columns m-1">
-                <div class="column is-4">
-                    <!-- 점수 체크-->
-                    <div class="select is-normal" id="select-rate">
-                        <label>
-                            <select>
-                                <option>별점</option>
-                                <option>⭐⭐⭐⭐⭐</option>
-                                <option>⭐⭐⭐⭐</option>
-                                <option>⭐⭐⭐</option>
-                                <option>⭐⭐</option>
-                                <option>⭐</option>
-                            </select>
-                        </label>
-                    </div>
-                </div>
-                <div class="column is-8">
-                    <!-- 리뷰 입력-->
+    </div>
+    <div class="box">
+        <h2 class="m-1">리뷰 작성</h2>
+        <div class="columns m-1">
+            <div class="column is-4">
+                <!-- 점수 체크-->
+                <div class="select is-normal" id="select-rate">
                     <label>
-                        <input class="input is-normal" type="text" placeholder="리뷰를 입력하세요." id="input-review">
+                        <select>
+                            <option>별점</option>
+                            <option>⭐⭐⭐⭐⭐</option>
+                            <option>⭐⭐⭐⭐</option>
+                            <option>⭐⭐⭐</option>
+                            <option>⭐⭐</option>
+                            <option>⭐</option>
+                        </select>
                     </label>
                 </div>
             </div>
-            <div class="columns">
-                <div class="column is-three-quarters">
-                </div>
-                <div class="is-one-quarter">
-                    <a class="button is-sparta" onclick="add_review()">리뷰 남기기</a>
-                </div>
+            <div class="column is-8">
+                <!-- 리뷰 입력-->
+                <label>
+                    <input class="input is-normal" type="text" placeholder="리뷰를 입력하세요." id="input-review">
+                </label>
             </div>
-
         </div>
-        <div class="box" id="trashcan-review-box">
-            {{ "쓰레기통" }} 리뷰 리스트
+        <div class="columns">
+            <div class="column is-three-quarters">
+            </div>
+            <div class="is-one-quarter">
+                <a class="button is-sparta" onclick="add_review()">리뷰 남기기</a>
+            </div>
         </div>
 
-    </section>
+    </div>
+    <div class="box" id="trashcan-review-box">
+        {{ "쓰레기통" }} 리뷰 리스트
+    </div>
+
+</section>
+
 {% endblock %}
