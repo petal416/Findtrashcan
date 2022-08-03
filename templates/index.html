@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}여기 버려{% endblock %}
+
+{% block script %}
+<script>
+    <!--script 는 여기에-->
+    function search_trashcan() {
+        let gu = $("#select-gu").val()
+        console.log(gu)
+    }
+</script>
+{% endblock %}
+
 {% block content %}
 
 <section>
@@ -8,9 +19,9 @@
         <!-- 구 선택-->
         <div class="column is-3 ">
             <div class="control has-icons-left">
-                <div class="select is-medium" id="select-gu">
+                <div class="select is-medium">
                     <label>
-                        <select>
+                        <select id="select-gu">
                             <option selected>구 선택</option>
                             <option>전체</option>
                             <option>강남구</option>
@@ -53,18 +64,5 @@
     <div class="box map m-5">
         검색 결과 -> 지도로 표시
     </div>
-
-
 </section>
-
-{% block script %}
-<script>
-    <!--script 는 여기에-->
-    function search_trashcan() {
-        let gu = $("#select-gu option:selected").val()
-        console.log(`검색한 구는 ${gu}`)
-
-    }
-</script>
-{% endblock %}
 {% endblock %}
