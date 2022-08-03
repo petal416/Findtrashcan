@@ -3,10 +3,11 @@
 
 {% block style %}
     <style>
-        .button{
+        .button {
             margin-left: 20px;
         }
-        #search-box{
+
+        #search-box {
             width: 100%;
 
             display: flex;
@@ -14,10 +15,23 @@
             justify-content: center;
             align-items: center;
         }
+
         #map {
             width: 50%;
             height: 50vh;
             margin: 20px auto 20px auto;
+        }
+
+        .infowindow{
+            maxWidth: 150px;
+            height: 100px;
+
+            padding: 0 10px 0 10px;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 {% endblock %}
@@ -27,12 +41,22 @@
         let y_cen = 37.5821148   // lat
         let x_cen = 126.9709607  // long
         let map;
+        let infoWindow = new naver.maps.InfoWindow({
+            content: `<h3>안녕!</h3>`,
+            //maxWidth: 1000,
+            backgroundColor: "#eee",
+            borderColor: "#2db400",
+            borderWidth: 2,
+            anchorSize: new naver.maps.Size(30, 30),
+            anchorSkew: true,
+            anchorColor: "#eee",
+        });
         let markers = [];
 
         //페이지가 로딩되자마자 실행
         $(document).ready(function () {
             // 맵이 없을 경우만 생성
-            if(!map) {
+            if (!map) {
                 map = new naver.maps.Map('map', {
                     center: new naver.maps.LatLng(y_cen, x_cen),
                     zoom: 12,
@@ -50,7 +74,7 @@
         function search_trashcan(trashcan_list) {
             empty_trash()
             let gu = $('#select-gu').val()
-            if(gu == "구를 선택해주세요"){
+            if (gu == "구를 선택해주세요") {
                 alert('구를 선택해주세요')
                 return
             }
@@ -70,22 +94,22 @@
             })
 
             //맞는 구에 것만 마커 추가하기기
-           let list_length = Object.keys(trashcan_list).length
+            let list_length = Object.keys(trashcan_list).length
             for (let i = 0; i < list_length; ++i) {
-                if(trashcan_list[i]['gu'] == gu) {
+                if (trashcan_list[i]['gu'] == gu) {
                     let marker = make_marker(trashcan_list[i])
                 }
             }
             $('#map').show()
         }
 
-        function empty_trash(){
+        function empty_trash() {
             for (let i = 0; i < markers.length; ++i) {
                 markers[i].setMap(null);
             }
         }
 
-        function make_marker(trash){
+        function make_marker(trash) {
             //마커 생성
             let marker = new naver.maps.Marker({
                 position: new naver.maps.LatLng(trash['mapy'], trash['mapx']),
@@ -122,10 +146,28 @@
                 })
             })
             //마커 클릭 이벤트
-            naver.maps.Event.addListener(marker, "click", function (e){
+            naver.maps.Event.addListener(marker, "click", function (e) {
                 let address = '/detail/' + trash['gu'] + ' ' + trash['ro'] + ' ' + trash['detail']
                 //window.open(address)
-                window.location.href = address
+                //window.location.href = address
+                if (infoWindow.getMap()) {
+                    let info = infoWindow.getPosition()
+                    let mark = marker.getPosition()
+                    if (info['x'] == mark['x'] && info['y'] == mark['y']) {
+                        infoWindow.close()
+                    } else {
+                        infoWindow.open(map, marker)
+                    }
+                } else {
+                    let address_info = address.split('/')[2]
+                    let tmp_html = `
+                                <div class="infowindow">
+                                    <h1><a href="${address}">${address_info}</a></h1>
+                                </div>
+                                `
+                    infoWindow.setContent(tmp_html)
+                    infoWindow.open(map, marker)
+                }
             })
             markers.push(marker)
             return marker
@@ -135,29 +177,29 @@
 
 {% block content %}
 
-<section>
-    <!--    검색 창-->
-    <div class="columns is-justify-content-center m-3">
-        <!-- 구 선택-->
-        <div class="column is-3" id="search-box">
-            <div class="control has-icons-left">
-                <div class="select is-medium">
-                    <label>
-                        <select id="select-gu">
-                            <option selected>구를 선택해주세요</option>
-                            {% for gu in gu_list %}
-                            <option>{{ gu }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
+    <section>
+        <!--    검색 창-->
+        <div class="columns is-justify-content-center m-3">
+            <!-- 구 선택-->
+            <div class="column is-3" id="search-box">
+                <div class="control has-icons-left">
+                    <div class="select is-medium">
+                        <label>
+                            <select id="select-gu">
+                                <option selected>구를 선택해주세요</option>
+                                {% for gu in gu_list %}
+                                    <option>{{ gu }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    </div>
+                    <span class="icon is-medium is-left"><i class="fa-solid fa-location-dot"></i></span>
                 </div>
-                <span class="icon is-medium is-left"><i class="fa-solid fa-location-dot"></i></span>
+                <button class="button" onclick="search_trashcan({{ trashcan_list }})">검색</button>
             </div>
-            <button class="button" onclick="search_trashcan({{ trashcan_list }})">검색</button>
+            <!--검색-->
         </div>
-        <!--검색-->
-    </div>
-    <!--검색 결과-->
-    <div id="map"></div>
-</section>
+        <!--검색 결과-->
+        <div id="map"></div>
+    </section>
 {% endblock %}

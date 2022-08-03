@@ -5,6 +5,7 @@ import hashlib
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from datetime import datetime, timedelta
 import certifi
+import json
 
 app = Flask(__name__)
 
@@ -88,8 +89,19 @@ def check_dup():
 
 @app.route("/detail/<address>")
 def detailInfo(address):
-    print(address)
-    return render_template("detail.html")
+    address_list = address.split(' ')
+    gu = address_list[0]
+    ro = address_list[1]
+    detail = address_list[2:]
+    detail_adv = ''
+    for det in detail:
+        detail_adv += (det + ' ')
+    detail_adv = detail_adv.strip(' ')
+
+    query = {'$and':[{'gu':gu}, {'ro':ro}, {'detail':detail_adv}]}
+    data = db.trashcan.find_one(query, {'_id': False})
+
+    return render_template("detail.html", address=address, data=json.dumps(data))
 
 
 @app.route('/user/<username>')
