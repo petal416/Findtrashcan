@@ -3,8 +3,19 @@
 
 {% block style %}
     <style>
-        #map {
+        .button{
+            margin-left: 20px;
+        }
+        #search-box{
             width: 100%;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        #map {
+            width: 50%;
             height: 50vh;
             margin: 20px auto 20px auto;
         }
@@ -18,24 +29,100 @@
         let map;
         let markers = [];
 
+        //페이지가 로딩되자마자 실행
+        $(document).ready(function () {
+            // 맵이 없을 경우만 생성
+            if(!map) {
+                map = new naver.maps.Map('map', {
+                    center: new naver.maps.LatLng(y_cen, x_cen),
+                    zoom: 12,
+                    zoomControl: true,
+                    zoomControlOptions: {
+                        style: naver.maps.ZoomControlStyle.SMALL,
+                        position: naver.maps.Position.TOP_RIGHT
+                    }
+                });
+            }
+            $('#map').hide()
+        })
+
         <!--script 는 여기에-->
-        function search_trashcan() {
-            let gu = $("#select-gu").val()
-            console.log(gu)
+        function search_trashcan(trashcan_list) {
+            empty_trash()
+            let gu = $('#select-gu').val()
+            if(gu == "구를 선택해주세요"){
+                alert('구를 선택해주세요')
+                return
+            }
+            let address = '서울시' + gu
+
+            //지도 중심위치 가져오기
+            naver.maps.Service.geocode({
+                address: address
+            }, function (status, response) {
+                if (status !== naver.maps.Service.Status.OK) {
+                    return alert('잘못 선택하셨습니다');
+                }
+                let result = response.result, // 검색 결과의 컨테이너
+                    items = result.items; // 검색 결과의 배열
+
+                map.setCenter(items[0]['point'])
+            })
+
+            //맞는 구에 것만 마커 추가하기기
+           let list_length = Object.keys(trashcan_list).length
+            for (let i = 0; i < list_length; ++i) {
+                if(trashcan_list[i]['gu'] == gu) {
+                    let marker = make_marker(trashcan_list[i])
+                }
+            }
+            $('#map').show()
         }
 
-        $(document).ready(function () {
-            // 맵 생성
-            map = new naver.maps.Map('map', {
-                center: new naver.maps.LatLng(y_cen, x_cen),
-                zoom: 15,
-                zoomControl: true,
-                zoomControlOptions: {
-                    style: naver.maps.ZoomControlStyle.SMALL,
-                    position: naver.maps.Position.TOP_RIGHT
-                }
-            });
-        })
+        function empty_trash(){
+            for (let i = 0; i < markers.length; ++i) {
+                markers[i].setMap(null);
+            }
+        }
+
+        function make_marker(trash){
+            //마커 생성
+            let marker = new naver.maps.Marker({
+                position: new naver.maps.LatLng(trash['mapy'], trash['mapx']),
+                map: map
+            })
+            //마커 이미지 변경
+            marker.setIcon({
+                url: "{{ url_for('static', filename='trash-can-regular.svg') }}",
+                size: new naver.maps.Size(22, 35),
+                scaledSize: new naver.maps.Size(22, 35),
+                origin: new naver.maps.Point(0, 0),
+                anchor: new naver.maps.Point(11, 35)
+            })
+
+            //마우스 호버 이벤트
+            naver.maps.Event.addListener(marker, "mouseover", function (e) {
+                marker.setIcon({
+                    url: "{{ url_for('static', filename='trash-can-solid.svg') }}",
+                    size: new naver.maps.Size(22, 35),
+                    scaledSize: new naver.maps.Size(22, 35),
+                    origin: new naver.maps.Point(0, 0),
+                    anchor: new naver.maps.Point(11, 35)
+                })
+            })
+            //마우스 언호버 이벤트
+            naver.maps.Event.addListener(marker, "mouseout", function (e) {
+                marker.setIcon({
+                    url: "{{ url_for('static', filename='trash-can-regular.svg') }}",
+                    size: new naver.maps.Size(22, 35),
+                    scaledSize: new naver.maps.Size(22, 35),
+                    origin: new naver.maps.Point(0, 0),
+                    anchor: new naver.maps.Point(11, 35)
+                })
+            })
+            markers.push(marker)
+            return marker
+        }
     </script>
 {% endblock %}
 
@@ -45,48 +132,23 @@
     <!--    검색 창-->
     <div class="columns is-justify-content-center m-3">
         <!-- 구 선택-->
-        <div class="column is-3 ">
+        <div class="column is-3" id="search-box">
             <div class="control has-icons-left">
                 <div class="select is-medium">
                     <label>
                         <select id="select-gu">
-                            <option selected>구 선택</option>
-                            <option>전체</option>
-                            <option>강남구</option>
-                            <option>강동구</option>
-                            <option>강북구</option>
-                            <option>강서구</option>
-                            <option>관악구</option>
-                            <option>광진구</option>
-                            <option>구로구</option>
-                            <option>금천구</option>
-                            <option>노원구</option>
-                            <option>도봉구</option>
-                            <option>동대문구</option>
-                            <option>동작구</option>
-                            <option>마포구</option>
-                            <option>서대문구</option>
-                            <option>서초구</option>
-                            <option>성동구</option>
-                            <option>성북구</option>
-                            <option>송파구</option>
-                            <option>양천구</option>
-                            <option>영등포구</option>
-                            <option>용산구</option>
-                            <option>은평구</option>
-                            <option>종로구</option>
-                            <option>중구</option>
-                            <option>중랑구</option>
+                            <option selected>구를 선택해주세요</option>
+                            {% for gu in gu_list %}
+                            <option>{{ gu }}</option>
+                            {% endfor %}
                         </select>
                     </label>
                 </div>
                 <span class="icon is-medium is-left"><i class="fa-solid fa-location-dot"></i></span>
             </div>
+            <button class="button" onclick="search_trashcan({{ trashcan_list }})">검색</button>
         </div>
         <!--검색-->
-        <div class="column is-3">
-            <button class="button" onclick="search_trashcan()">검색</button>
-        </div>
     </div>
     <!--검색 결과-->
     <div id="map"></div>

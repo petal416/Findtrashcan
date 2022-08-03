@@ -51,7 +51,7 @@ def addDB(data):
             }
             db.trashcan.insert_one(doc)
 
-filename = 'static/서울특별시 가로쓰레기통 현황_202106.xlsx'
+filename = '../static/서울특별시 가로쓰레기통 현황_202106.xlsx'
 
 df = pd.read_excel(filename, header = 1,
                    names = ['자치구', '도로명', '상세 주소', '수거 쓰레기 종류'],

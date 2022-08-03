@@ -9,18 +9,22 @@ import certifi
 app = Flask(__name__)
 
 ca = certifi.where()
-
 client = MongoClient('mongodb+srv://test:sparta@cluster0.72mx2.mongodb.net/Cluster0?retryWrites=true&w=majority',
                      tlsCAFile=ca)
 db = client.Findtrashcan
 
-
 SECRET_KEY = 'SPARTA'
-
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    # DB에 있는 데이터를 읽어서 쓰레기통이 있는 자치구 리스트를 생성
+    all_trashcan = list(db.trashcan.find({},{'_id':False}))
+    gu_list = []
+    for trashcan in all_trashcan:
+        gu_list.append(trashcan['gu'])
+    gu_list = list(set(gu_list))
+
+    return render_template('index.html', trashcan_list=all_trashcan, gu_list=gu_list)
     # token_receive = request.cookies.get('mytoken')
     # try:
     #     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -82,9 +86,9 @@ def check_dup():
     return jsonify({'result': 'success', 'exists': exists})
 
 
-@app.route("/search")
-def search_trashcan():
-    return render_template("search.html")
+# @app.route("/search")
+# def search_trashcan():
+#     return render_template("search.html")
 
 
 @app.route('/user/<username>')
