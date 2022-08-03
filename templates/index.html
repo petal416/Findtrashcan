@@ -100,6 +100,7 @@
                 anchor: new naver.maps.Point(11, 35)
             })
 
+            /************* 마커 이벤트 추가 *************/
             //마우스 호버 이벤트
             naver.maps.Event.addListener(marker, "mouseover", function (e) {
                 marker.setIcon({
@@ -119,6 +120,12 @@
                     origin: new naver.maps.Point(0, 0),
                     anchor: new naver.maps.Point(11, 35)
                 })
+            })
+            //마커 클릭 이벤트
+            naver.maps.Event.addListener(marker, "click", function (e){
+                let address = '/detail/' + trash['gu'] + '_' + trash['ro'] + '_' + trash['detail']
+                //window.open(address)
+                window.location.href = address
             })
             markers.push(marker)
             return marker

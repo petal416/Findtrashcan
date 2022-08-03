@@ -86,9 +86,10 @@ def check_dup():
     return jsonify({'result': 'success', 'exists': exists})
 
 
-# @app.route("/search")
-# def search_trashcan():
-#     return render_template("search.html")
+@app.route("/detail/<address>")
+def detailInfo(address):
+    print(address)
+    return render_template("detail.html")
 
 
 @app.route('/user/<username>')
