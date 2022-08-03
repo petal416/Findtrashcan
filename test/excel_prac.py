@@ -36,9 +36,8 @@ def addDB(data):
         }
         gu = add[0]
         ro = add[1]
-        detail = str(add[2])
-        detail_sujung = detail.strip(ro).strip()
-        address = f'서울시 {gu} {ro} {detail_sujung}'
+        detail = str(add[2]).strip(ro).strip()
+        address = f'서울시 {gu} {ro} {detail}'
 
         xy = address_change(address)
         if xy:
@@ -51,12 +50,14 @@ def addDB(data):
             }
             db.trashcan.insert_one(doc)
 
-filename = '../static/서울특별시 가로쓰레기통 현황_202106.xlsx'
+# filename = '../static/서울특별시 가로쓰레기통 현황_202106.xlsx'
+#
+# df = pd.read_excel(filename, header = 1,
+#                    names = ['자치구', '도로명', '상세 주소', '수거 쓰레기 종류'],
+#                    usecols = [2, 3, 4, 6],
+#                    engine='openpyxl')
+# df_num = pd.DataFrame.to_numpy(df)
+#
+# addDB(df_num)
 
-df = pd.read_excel(filename, header = 1,
-                   names = ['자치구', '도로명', '상세 주소', '수거 쓰레기 종류'],
-                   usecols = [2, 3, 4, 6],
-                   engine='openpyxl')
-df_num = pd.DataFrame.to_numpy(df)
-
-addDB(df_num)
+db.trashcan.update_many({'gu':'강서'},{'$set':{'gu':'강서구'}})
