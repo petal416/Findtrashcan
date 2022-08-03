@@ -43,22 +43,6 @@
 <nav class="navbar is-transparent" id="nav-main">
     <div class="navbar-menu">
         <div class="navbar-end">
-            {% if 'mytoken' %}
-            <div class="navbar-item">
-                <div class="field is-grouped">
-                    <p class="control" id="link-mypage">
-                        <a class="button" href="/user/{{ user_info.username }}"><span>마이페이지</span></a>
-                    </p>
-                    <p class="control is-hidden" id="link-home">
-                        <a class="button" href="/"><span>메인으로</span></a>
-                    </p>
-
-                    <p class="control">
-                        <button class="button" onclick="logout()"><span>로그아웃</span></button>
-                    </p>
-                </div>
-            </div>
-            {% else %}
             <div class="navbar-item">
                 <div class="field is-grouped">
                     <p class="control">
@@ -69,9 +53,6 @@
                     </p>
                 </div>
             </div>
-            {% endif %}
-
-
         </div>
     </div>
     </div>
