@@ -19,3 +19,18 @@ footer {
 /*.map {*/
 /*    min-height: 50vh;*/
 /*}*/
+
+.title {
+    font-weight: 800;
+    font-size: 5rem;
+}
+
+.is-trashcan {
+    color:  #3e8ed0 !important;
+}
+
+.subtitle {
+    font-family: 'Gamja Flower', cursive;
+    font-size: 2rem;
+
+}

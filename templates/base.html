@@ -32,7 +32,7 @@
 
     <!-- naver API -->
     <script type="text/javascript"
-                src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=t1dsmry018&submodules=geocoder"></script>
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=t1dsmry018&submodules=geocoder"></script>
 
     {% block style %}
     {% endblock %}
@@ -42,15 +42,21 @@
 </head>
 <body>
 
-<section class="hero is-white">
-    <div class="hero-body has-text-centered">
-        <h1 class="title">여기 버려</h1>
-        <h3 class="subtitle">쓰레기통 위치 정보 시스템</h3>
+<section class="hero is-white" id="hero-header">
+    <div class="hero-body has-text-centered header-box">
+        <h1 class="title is-trashcan">Find Trashcan</h1>
+        <h3 class="subtitle is-trashcan">세상을 깨끗하게</h3>
     </div>
 </section>
 
 <nav class="navbar is-transparent" id="nav-main">
     <div class="navbar-menu">
+        <div class="navbar-brand is-hidden" id="nav-logo">
+            <a class="navbar-item" href="/">
+                <img src="{{ url_for('static', filename='logo6.png') }}" alt="logo">
+                <strong style="font-size: larger;">FindTrashcan</strong>
+            </a>
+        </div>
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="field is-grouped">
@@ -69,9 +75,9 @@
 {% block content %}
 {% endblock %}
 
-<footer>
-    copyright by 이노베이션 캠프 in 서울 15조
-</footer>
+<!--<footer>-->
+<!--    copyright by 이노베이션 캠프 in 서울 15조-->
+<!--</footer>-->
 </body>
 
 </html>
