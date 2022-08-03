@@ -7,7 +7,7 @@ import certifi
 ca = certifi.where()
 client = MongoClient('mongodb+srv://test:sparta@cluster0.72mx2.mongodb.net/Cluster0?retryWrites=true&w=majority',
                      tlsCAFile=ca)
-db = client.dbsparta
+db = client.Findtrashcan
 
 def address_change(address):
     headers = {
@@ -49,19 +49,14 @@ def addDB(data):
                 'mapx': xy[0],
                 'mapy': xy[1]
             }
-            db.trash.insert_one(doc)
+            db.trashcan.insert_one(doc)
 
 filename = 'static/서울특별시 가로쓰레기통 현황_202106.xlsx'
 
 df = pd.read_excel(filename, header = 1,
                    names = ['자치구', '도로명', '상세 주소', '수거 쓰레기 종류'],
                    usecols = [2, 3, 4, 6],
-                   skiprows = 3490,
-                   nrows = 10,
                    engine='openpyxl')
 df_num = pd.DataFrame.to_numpy(df)
-print(df_num)
 
-# addDB(df_num)
-
-
+addDB(df_num)

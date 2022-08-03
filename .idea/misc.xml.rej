@@ -1,0 +1,8 @@
+diff a/.idea/misc.xml b/.idea/misc.xml	(rejected hunks)
+@@ -1,4 +1,4 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.8 (FindTrashcan)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.8 (Findtrashcan) (2)" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
