@@ -13,7 +13,6 @@ ca = certifi.where()
 client = MongoClient('mongodb+srv://test:sparta@cluster0.72mx2.mongodb.net/Cluster0?retryWrites=true&w=majority',
                      tlsCAFile=ca)
 db = client.Findtrashcan
-
 SECRET_KEY = 'SPARTA'
 
 
@@ -99,7 +98,7 @@ def detailInfo(address):
         detail_adv += (det + ' ')
     detail_adv = detail_adv.strip(' ')
 
-    query = {'$and':[{'gu':gu}, {'ro':ro}, {'detail':detail_adv}]}
+    query = {'$and': [{'gu': gu}, {'ro': ro}, {'detail': detail_adv}]}
     data = db.trashcan.find_one(query, {'_id': False})
 
     return render_template("detail.html", address=address, data=json.dumps(data))
@@ -132,7 +131,6 @@ def add_review():
         star_receive = request.form["star_give"]
         review_receive = request.form["review_give"]
         date_receive = request.form["date_give"]
-        print(date_receive)
 
         doc = {
             "username": user_info["username"],
@@ -147,6 +145,42 @@ def add_review():
         return jsonify({'result': 'success', 'msg': '리뷰 등록 성공'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return jsonify({'result': 'fail', 'msg': '리뷰 등록 실패'})
+
+
+# 해당 유저가 남긴 쓰레기통들에 대한 리뷰 가져오기
+@app.route("/get_reviews", methods=['GET'])
+def get_reviews_user():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        my_username = payload["id"]
+        username_receive = request.args.get("username_give")
+
+        if username_receive == "":
+            reviews = list(db.reviews.find({}).sort("date", -1).limit(20))
+        else:
+            reviews = list(db.reviews.find({"username": username_receive}).sort("date", -1).limit(20))
+
+            for review in reviews:
+                review["_id"] = str(review["_id"])
+
+        return jsonify({"result": "success", "reviews": reviews})
+    except(jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
+# 해당 주소의 쓰레기통에 대한 리뷰 가져오기
+@app.route("/get_trashcan_reviews", methods=['GET'])
+def get_reviews_trashcan():
+    trashcan_receive = request.args.get("trashcan_give")
+    print(trashcan_receive)
+
+    trashcan_reviews = list(db.reviews.find({"trashcan": trashcan_receive}).sort("date", -1).limit(20))
+
+    for review in trashcan_reviews:
+        review["_id"] = str(review["_id"])
+
+    return jsonify({"result": "success", "reviews": trashcan_reviews})
 
 
 if __name__ == '__main__':

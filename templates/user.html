@@ -4,70 +4,73 @@
 {% block script %}
     <script>
         $(document).ready(function () {
+             $("#hero-header").toggleClass("is-hidden")
             $("#link-mypage").addClass("is-hidden")
             $("#link-home").toggleClass("is-hidden")
 
-            get_reviews("{{ user_info.username }}")
+            get_user_reviews("{{ user_info.username }}")
         })
 
-        function add_review() {
-            let stars = $("#select-rate option:selected").val()
-            let review = $('#input-review').val()
-            let today = new Date().toISOString()
-            console.log(stars, review, today)
+        function get_user_reviews(username) {
+
+            $("#user-review-box").empty()
 
             $.ajax({
-                type: 'POST',
-                url: '/reviewing',
-                data: {
-                    star_give: stars,
-                    review_give: review,
-                    date_give: today,
-                },
+                type: "GET",
+                url: `/get_reviews?username_give=${username}`,
+                data: {},
                 success: function (response) {
-                    alert(response['msg'])
-                    window.location.reload()
+                    let reviews = response["reviews"]
+
+                    for (let i = 0; i < reviews.length; i++) {
+                        let review = reviews[i]
+                        let time_review = new Date(review["date"])
+                        let time_text = time_to_str(time_review)
+
+                        let temp_html = ``
+                        temp_html = `<div class="box" id="${review["_id"]}">
+                                        <div class="columns">
+                                            {# 쓰레기통 이름 #}
+                                            <div class="column is-7">${review['trashcan']}</div>
+                                            {# 쓰레기통 별점 #}
+                                            <div class="column is-3">${review['star']}</div>
+
+                                            <div class="column is-2">${time_text}</div>
+                                        </div>
+                                        <div class="columns">
+                                            <div class="column is-full"><p>${review['review']}</p></div>
+                                        </div>
+                                     </div>`
+                        $("#user-review-box").append(temp_html)
+
+                    }
+
                 }
             })
         }
 
-        function time_to_str(date) {
-            let today = new Date()
-            let time = (today - date) / 1000 / 60  // 분
-
-            if (time < 60) {
-                return parseInt(time) + "분 전"
-            }
-            time = time / 60  // 시간
-            if (time < 24) {
-                return parseInt(time) + "시간 전"
-            }
-            time = time / 24
-            if (time < 7) {
-                return parseInt(time) + "일 전"
-            }
-            return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
-        }
     </script>
 {% endblock %}
 
 
 {% block content %}
-<div class="box">
-    <h2>리뷰 목록</h2>
+    <section class="hero is-white">
+        <div class="box">
+            <h2>유저 정보</h2>
+        </div>
 
+    </section>
     <section class="section">
-        <div id="review-box" class="container">
+        <h2>리뷰 목록</h2>
+        <div id="user-review-box" class="container">
         </div>
     </section>
 
-</div>
-<div class="box">
-    <h2>즐겨찾기 목록</h2>
     <section class="section">
-        <div id="favorite-box" class="container">
+
+        <h2>즐겨찾기 목록</h2>
+        <div id="user-favorite-box" class="container">
         </div>
     </section>
-</div>
 
 {% endblock %}
