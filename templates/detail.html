@@ -130,11 +130,12 @@
             success: function (response) {
                 let reviews = response["reviews"]
                 let temp_html = ``
+                //리뷰 없을 때,
                 if (reviews.length === 0) {
                     temp_html = `<p>등록된 리뷰가 없습니다.</p>`
                     $("#trashcan-review-box").append(temp_html)
                 }
-
+                //리뷰 있을 때
                 for (let i = 0; i < reviews.length; i++) {
                     let review = reviews[i]
                     let time_review = new Date(review["date"])
@@ -145,14 +146,13 @@
                                         <article class="media">
                                             <div class="media-left">
                                                 <a class="image is-64x64" href="/user/${review['username']}">
-                                                    <img class="is-rounded" src="/static/${review['profile_pic_real']}"
-                                                         alt="Image">
+                                                    <img class="is-rounded" src="/static/${review['profile_pic_real']}" alt="Image">
                                                 </a>
                                             </div>
                                             <div class="media-content">
                                                 <div class="content">
                                                     <p>
-                                                        <strong>${review['nickname']}</strong> <small>@${review['username']}</small> <small>${time_text}</small>
+                                                        <strong>${review['nickname']} </strong> <small class="mr-4">@${review['username']}    </small>  <small>  ${time_text}</small>
                                                         <br>${review['star']}<br>
                                                         ${review['review']}
                                                     </p>
