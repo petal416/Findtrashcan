@@ -192,7 +192,7 @@ def add_review():
 
         return jsonify({'result': 'success', 'msg': '리뷰 등록 성공'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return jsonify({'result': 'fail', 'msg': '리뷰 등록 실패'})
+        return jsonify({'result': 'fail', 'msg': '로그인 후 이용 가능 합니다!'})
 
 
 # 해당 유저가 남긴 쓰레기통들에 대한 리뷰 가져오기
@@ -230,6 +230,17 @@ def get_reviews_trashcan():
 
     return jsonify({"result": "success", "reviews": trashcan_reviews})
 
+
+@app.route("", methods=['POST'])
+def update_favorite():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.users.find_one({"username": payload["id"]})
+        trashcan_receive = request.form["trashcan_give"]
+        type_receive = request.form["type_give"]
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
