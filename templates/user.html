@@ -9,7 +9,6 @@
             $("#link-home").toggleClass("is-hidden")
             $("#nav-login").addClass("is-hidden")
 
-
             get_user_reviews("{{ user_info.username }}")
         })
 
@@ -55,7 +54,7 @@
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
             alert('로그아웃!')
-            window.location.href = "/login"
+            window.location.href = "/"
         }
 
         // 프로필 수정
@@ -63,13 +62,18 @@
             let name = $('#input-name').val()
             let file = $('#input-pic')[0].files[0]
             let about = $("#textarea-about").val()
-            let password = $('#input-password').val()
             let form_data = new FormData()
+
+            //닉네임, 비밀번호 빈칸방지
+            if(name == ""){
+                alert("닉네임을 입력해주세요")
+                return
+            }
+
             form_data.append("file_give", file)
             form_data.append("name_give", name)
             form_data.append("about_give", about)
-            form_data.append("password_give", password)
-            console.log(name, file, about, password, form_data)
+            console.log(name, file, about, form_data)
 
             $.ajax({
                 type: "POST",
@@ -170,15 +174,6 @@
 
                             <textarea id="textarea-about" class="textarea"
                                       placeholder="자기소개하기">{{ user_info.profile_info }}</textarea>
-                                        </p>
-                                    </div>
-                                    <div class="field">
-                                        <label class="label" for="input-name">비밀번호</label>
-
-                                        <p class="control">
-
-                                            <input id="input-password" class="input"
-                                                   placeholder="비밀번호" value="">
                                         </p>
                                     </div>
                                     <nav class="level is-mobile">
