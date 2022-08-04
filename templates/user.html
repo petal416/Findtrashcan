@@ -30,18 +30,18 @@
 
                         let temp_html = ``
                         temp_html = `<div class="box" id="${review["_id"]}">
-                                        <div class="columns">
-                                            {# 쓰레기통 이름 #}
-                                            <div class="column is-7">${review['trashcan']}</div>
-                                            {# 쓰레기통 별점 #}
-                                            <div class="column is-3">${review['star']}</div>
-
-                                            <div class="column is-2">${time_text}</div>
-                                        </div>
-                                        <div class="columns">
-                                            <div class="column is-full"><p>${review['review']}</p></div>
-                                        </div>
-                                     </div>`
+                                        <article class="media">
+                                            <div class="media-content">
+                                                <div class="content">
+                                                    <p>
+                                                        <strong>${review['trashcan']} </strong> <small class="mr-4"></small>  <small>  ${time_text}</small>
+                                                        <br>${review['star']}<br>
+                                                        ${review['review']}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </div>`
                         $("#user-review-box").append(temp_html)
 
                     }
@@ -58,7 +58,7 @@
             let form_data = new FormData()
 
             //닉네임, 비밀번호 빈칸방지
-            if(name == ""){
+            if (name == "") {
                 alert("닉네임을 입력해주세요")
                 return
             }
