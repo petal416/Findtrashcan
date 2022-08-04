@@ -22,16 +22,17 @@
 {% block script %}
     <script>
         let database = {{ data | safe }}
-            let
-        y_cen = database['mapy']   // lat
+        let y_cen = database['mapy']   // lat
         let x_cen = database['mapx']  // long
-        let map;
+        let map
 
-        let trashcan_address= `{{ address }}`;
+        let trashcan_address= `{{ address }}`
 
         $(document).ready(function () {
+            //로고 변경
             $("#hero-header").addClass("is-hidden")
             $("#nav-logo").removeClass("is-hidden")
+
             // 맵이 없을 경우만 생성
             if (!map) {
                 map = new naver.maps.Map('map', {

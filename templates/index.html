@@ -55,6 +55,10 @@
 
         //페이지가 로딩되자마자 실행
         $(document).ready(function () {
+            //로고 변경
+            $("#hero-header").removeClass("is-hidden")
+            $("#nav-logo").addClass("is-hidden")
+
             // 맵이 없을 경우만 생성
             if (!map) {
                 map = new naver.maps.Map('map', {
@@ -68,9 +72,6 @@
                 });
             }
             $('#map').hide()
-
-            //로그인 버튼 박스 -> 로그인 여부로스처리 필요..
-            $('#nav-login').removeClass("is-hidden")
         })
 
         <!--script 는 여기에-->
