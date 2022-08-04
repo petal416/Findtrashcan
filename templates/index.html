@@ -22,7 +22,7 @@
             margin: 20px auto 20px auto;
         }
 
-        .infowindow{
+        .infowindow {
             maxWidth: 150px;
             height: 100px;
 
@@ -154,14 +154,29 @@
                 //window.open(address)
                 //window.location.href = address
                 if (infoWindow.getMap()) {
+                    //infowindow가 열려있을 때 누르면
                     let info = infoWindow.getPosition()
                     let mark = marker.getPosition()
+                    //클릭한 마커와 infowindow좌표가 같을 경우
                     if (info['x'] == mark['x'] && info['y'] == mark['y']) {
                         infoWindow.close()
-                    } else {
+                    }
+                    //클릭한 마커와 infowindow좌표가 다를 경우
+                    else {
+                        //infowindow 내용 바꾸고 open
+                        let address_info = address.split('/')[2]
+                        let tmp_html = `
+                                <div class="infowindow">
+                                    <h1><a href="${address}">${address_info}</a></h1>
+                                </div>
+                                `
+                        infoWindow.setContent(tmp_html)
                         infoWindow.open(map, marker)
                     }
-                } else {
+                }
+                //infowindow가 닫혀있을 경우
+                else {
+                    //infowindow 내용 바꾸고 open
                     let address_info = address.split('/')[2]
                     let tmp_html = `
                                 <div class="infowindow">
