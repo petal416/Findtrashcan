@@ -75,7 +75,8 @@
 
         <!--script 는 여기에-->
         function search_trashcan(trashcan_list) {
-            empty_trash()
+            delete_marker()
+            infoWindow.close()
             let gu = $('#select-gu').val()
             if (gu == "구를 선택해주세요") {
                 alert('구를 선택해주세요')
@@ -106,7 +107,7 @@
             $('#map').show()
         }
 
-        function empty_trash() {
+        function delete_marker() {
             for (let i = 0; i < markers.length; ++i) {
                 markers[i].setMap(null);
             }
