@@ -168,13 +168,12 @@ def detailInfo(address):
 def user(username):
     token_receive = request.cookies.get('mytoken')
     user_info = db.users.find_one({"username": username}, {"_id": False})
-
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
         return render_template('user.html', user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return render_template('user.html',  user_info=user_info, status=False)
+        return render_template('user.html', user_info=user_info, status=False)
 
 
 # 리뷰 추가
@@ -210,8 +209,10 @@ def add_review():
 # 해당 유저가 남긴 쓰레기통들에 대한 리뷰 가져오기
 @app.route("/get_reviews", methods=['GET'])
 def get_reviews_user():
-
+    #token_receive = request.cookies.get('mytoken')
     try:
+        # payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        # my_username = payload["id"]
         username_receive = request.args.get("username_give")
 
         if username_receive == "":
@@ -224,7 +225,7 @@ def get_reviews_user():
 
         return jsonify({"result": "success", "reviews": reviews})
     except(jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return jsonify({"result": "success", "reviews": reviews})
+        return redirect(url_for("home"))
 
 
 # 해당 주소의 쓰레기통에 대한 리뷰 가져오기
