@@ -4,14 +4,9 @@
 
 {% block style %}
      <style>
-         .tytle {
-             font-family: 'Nanum Myeongjo', serif;
-         }
-
-         .subtitle {
-             font-size: 2rem;
-             font-family: 'Stylish', sans-serif;
-         }
+        #login_box {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
 
          .is-sparta {
              color: #3a95e6 !important;
@@ -197,6 +192,7 @@
                 $("#help-password-login").text("")
             }
             //sign_in 주소로 클라이언트 -> 서버로 검증 요청
+            console.log(password,username)
             $.ajax({
                 type: "POST",
                 url: "/sign_in",
@@ -225,7 +221,7 @@
 <!--body-->
 <section class="section">
     <div class="container">
-        <div class="box" style="max-width: 480px;margin:auto">
+        <div class="box" id="login_box" style="max-width: 480px;margin:auto">
             <article class="media">
                 <div class="media-content">
                     <div class="content">
