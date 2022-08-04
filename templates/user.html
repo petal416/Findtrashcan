@@ -49,17 +49,162 @@
             })
         }
 
+        // 로그아웃
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
+
+        // 프로필 수정
+        function update_profile() {
+            let name = $('#input-name').val()
+            let file = $('#input-pic')[0].files[0]
+            let about = $("#textarea-about").val()
+            let password = $('#input-password').val()
+            let form_data = new FormData()
+            form_data.append("file_give", file)
+            form_data.append("name_give", name)
+            form_data.append("about_give", about)
+            form_data.append("password_give", password)
+            console.log(name, file, about, password, form_data)
+
+            $.ajax({
+                type: "POST",
+                url: "/update_profile",
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert(response["msg"])
+                        window.location.reload()
+
+                    }
+                }
+            });
+        }
+
     </script>
 {% endblock %}
 
 
 {% block content %}
     <section class="hero is-white">
-        <div class="box">
-            <h2>유저 정보</h2>
-        </div>
+        <div class="hero-body" style="padding-bottom:1rem;margin:auto;min-width: 400px">
+            <article class="media">
 
+                <figure class="media-left" style="align-self: center">
+                    <a class="image is-96x96" href="#">
+                        <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
+                    </a>
+                </figure>
+                <div class="media-content">
+                    <div class="content">
+                        <p>
+                            <strong>{{ user_info.nickname }}</strong> <small>@{{ user_info.username }}</small>
+                            <br>
+                            {{ user_info.profile_info }}
+                        </p>
+                    </div>
+
+                </div>
+            </article>
+            {% if status %}
+            <!--프로필 페이지 버튼 추가-->
+            <nav id="btns-me" class="level is-mobile" style="margin-top:2rem">
+                <a class="button level-item has-text-centered is-sparta" aria-label="edit"
+                   onclick='$("#modal-edit").addClass("is-active")'>
+                    프로필 수정&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="fa fa-pencil"
+                                                                           aria-hidden="true"></i></span>
+                </a>
+
+                <a class="button level-item has-text-centered is-sparta is-outlined" aria-label="logout"
+                   onclick="sign_out()">
+                    로그아웃&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="fa fa-sign-out"
+                                                                         aria-hidden="true"></i></span>
+                </a>
+            </nav>
+            <!--프로필 수정 모달-->
+            <div class="modal" id="modal-edit">
+                <div class="modal-background" onclick='$("#modal-edit").removeClass("is-active")'></div>
+                <div class="modal-content">
+                    <div class="box">
+                        <article class="media">
+                            <div class="media-content">
+                                <div class="field">
+                                    <label class="label" for="input-name">닉네임</label>
+
+                                    <p class="control">
+
+                                        <input id="input-name" class="input"
+                                               placeholder="홍길동" value="{{ user_info.nickname }}">
+                                    </p>
+                                </div>
+                                <div class="field">
+                                    <label class="label" for="input-pic">프로필 사진</label>
+
+                                    <div class="control is-expanded">
+                                        <div class="file has-name">
+                                            <label class="file-label" style="width:100%">
+                                                <input id="input-pic" class="file-input" type="file"
+                                                       name="resume">
+                                                <span class="file-cta"><span class="file-icon"><i
+                                                        class="fa fa-upload"></i></span>
+                                                            <span class="file-label">파일 선택</span>
+                                                        </span>
+                                                <span id="file-name" class="file-name"
+                                                      style="width:100%;max-width:100%">{{ user_info.profile_pic }}</span>
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label class="label" for="textarea-about">나는 누구?</label>
+
+                                    <p class="control">
+
+                            <textarea id="textarea-about" class="textarea"
+                                      placeholder="자기소개하기">{{ user_info.profile_info }}</textarea>
+                                    </p>
+                                </div>
+                                <div class="field">
+                                    <label class="label" for="input-name">비밀번호</label>
+
+                                    <p class="control">
+
+                                        <input id="input-password" class="input"
+                                               placeholder="비밀번호" value="">
+                                    </p>
+                                </div>
+                                <nav class="level is-mobile">
+                                    <div class="level-left">
+
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="level-item">
+                                            <a class="button is-sparta" onclick="update_profile()">업데이트</a>
+                                        </div>
+                                        <div class="level-item">
+                                            <a class="button is-sparta is-outlined"
+                                               onclick='$("#modal-edit").removeClass("is-active")'>취소</a>
+                                        </div>
+                                    </div>
+                                </nav>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <button class="modal-close is-large" aria-label="close"
+                        onclick='$("#modal-edit").removeClass("is-active")'></button>
+            </div>
+            {% endif %}
+        </div>
     </section>
+
+
     <section class="section">
         <h2>리뷰 목록</h2>
         <div id="user-review-box" class="container">

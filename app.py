@@ -3,6 +3,7 @@ import jwt
 import datetime
 import hashlib
 from flask import Flask, render_template, jsonify, request, redirect, url_for
+from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 import certifi
 import json
@@ -43,48 +44,93 @@ def login():
     return render_template('login.html', msg=msg)
 
 
+# 로그인 서버
+# 클라이언트 -> 서버 검증요청 -> ID, PW 존재 여부 확인
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
-    # 로그인
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
 
+    # PW 암호화
     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    # ID, PW 존재 여부 확인
     result = db.users.find_one({'username': username_receive, 'password': pw_hash})
 
+    # ID, PW 매칭 여부 확인
     if result is not None:
         payload = {
-            'id': username_receive,
-            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+         'id': username_receive,
+         'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
         }
+        # JWT 토큰 발행
+        # .decode('utf-8')삭제 -> 이미 decode가 됐기 때문에 decode 할게 없음
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-
+        # JWT 토큰 -> 클라이언트로 발행
         return jsonify({'result': 'success', 'token': token})
     # 찾지 못하면
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 
+# 회원가입 서버
 @app.route('/sign_up/save', methods=['POST'])
 def sign_up():
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
+    nickname_receive = request.form['nickname_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     doc = {
-        "username": username_receive,
-        "password": password_hash,
-        "profile_name": username_receive,
+        "username": username_receive,                               # 아이디
+        "password": password_hash,                                  # 비밀번호
+        "nickname": nickname_receive,                               # 닉네임
+        "profile_pic": "",                                          # 프로필 사진 파일 이름
+        "profile_pic_real": "profile_pics/profile_placeholder.png", # 프로필 사진 기본 이미지
+        "profile_info": ""                                          # 프로필 한 마디
     }
+    # ID, PW 서버로 저장
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
 
 
+# ID 중복확인
 @app.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
+    # DB에서 username을 받는다.
     username_receive = request.form['username_give']
+    # DB에서 username이 받아지면 exist(이미존재함), bool(False)를 의미
     exists = bool(db.users.find_one({"username": username_receive}))
-    # print(value_receive, type_receive, exists)
     return jsonify({'result': 'success', 'exists': exists})
+
+
+# 프로필 수정 서버
+@app.route('/update_profile', methods=['POST'])
+def save_img():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        username = payload["id"]
+        name_receive = request.form["name_give"]
+        about_receive = request.form["about_give"]
+        password_receive = request.form["password_give"]
+        pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+        new_doc = {
+            "nickname": name_receive,
+            "profile_info": about_receive,
+            "password": pw_hash
+        }
+        if 'file_give' in request.files:
+            file = request.files["file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/"+file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+        db.users.update_one({'username': payload['id']}, {'$set':new_doc})
+        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 
 
 @app.route("/detail/<address>")
@@ -104,16 +150,15 @@ def detailInfo(address):
     return render_template("detail.html", address=address, data=json.dumps(data))
 
 
+# 프로필 페이지 서버
 @app.route('/user/<username>')
 def user(username):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        print(payload)
-        status = (username == payload["id"])
+        status = (username == payload["id"])    # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
         user_info = db.users.find_one({"username": username}, {"_id": False})
-
         return render_template('user.html', user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
