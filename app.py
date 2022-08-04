@@ -209,12 +209,8 @@ def add_review():
 # 해당 유저가 남긴 쓰레기통들에 대한 리뷰 가져오기
 @app.route("/get_reviews", methods=['GET'])
 def get_reviews_user():
-    #token_receive = request.cookies.get('mytoken')
     try:
-        # payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # my_username = payload["id"]
         username_receive = request.args.get("username_give")
-
         if username_receive == "":
             reviews = list(db.reviews.find({}).sort("date", -1).limit(20))
         else:
