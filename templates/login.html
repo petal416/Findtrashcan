@@ -164,7 +164,12 @@
                 },
                 success: function (response) {
                     alert("회원가입을 축하드립니다!")
-                    window.location.replace("/login")
+                    //원래는 이 코드 였고
+                    //window.location.reload()
+                    //이제는 리로드안하고 그냥 토글함수 한번더
+                    toggle_sign_up()
+                    $("#input-username").val('')
+                    $("#input-password").val('')
                 }
             });
 
