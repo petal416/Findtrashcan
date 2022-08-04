@@ -16,18 +16,17 @@ footer {
     bottom: 0;
 }
 
-/*.map {*/
-/*    min-height: 50vh;*/
-/*}*/
-
-#title{
-    /*font-family: 'Gamja Flower', cursive;*/
+#header-bg {
     background-image: url("title_logo.png");
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
+    background-color: white;
 
-    height: 95%;
-    max-height: 500px;
+}
+
+#header-bg:hover{
+    cursor: pointer;
 }
 
 .title {
