@@ -50,13 +50,6 @@
             })
         }
 
-        // 로그아웃
-        function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            alert('로그아웃!')
-            window.location.href = "/"
-        }
-
         // 프로필 수정
         function update_profile() {
             let name = $('#input-name').val()
@@ -127,7 +120,7 @@
                     </a>
 
                     <a class="button level-item has-text-centered is-sparta is-outlined" aria-label="logout"
-                       onclick="sign_out()">
+                       onclick="logout()">
                         로그아웃&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="fa fa-sign-out"
                                                                              aria-hidden="true"></i></span>
                     </a>
