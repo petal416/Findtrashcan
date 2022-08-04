@@ -26,7 +26,7 @@
         let x_cen = database['mapx']  // long
         let map
 
-        let trashcan_address= `{{ address }}`
+        let trashcan_address = `{{ address }}`
 
         $(document).ready(function () {
             //로고 변경
@@ -117,23 +117,37 @@
                 data: {},
                 success: function (response) {
                     let reviews = response["reviews"]
+                    let temp_html = ``
+                    if (reviews.length === 0) {
+                        temp_html = `<p>등록된 리뷰가 없습니다.</p>`
+                        $("#trashcan-review-box").append(temp_html)
+                    }
 
                     for (let i = 0; i < reviews.length; i++) {
                         let review = reviews[i]
                         let time_review = new Date(review["date"])
                         let time_text = time_to_str(time_review)
 
-                        let temp_html = ``
+
                         temp_html = `<div class="box" id="${review["_id"]}">
-                                            <div class="columns">
-                                                <div class="column is-4">${review['username']}</div>
-                                                <div class="column is-4">${review['star']}</div>
-                                                <div class="column is-4">${time_text}</div>
+                                        <article class="media">
+                                            <div class="media-left">
+                                                <a class="image is-64x64" href="/user/${review['username']}">
+                                                    <img class="is-rounded" src="/static/${review['profile_pic_real']}"
+                                                         alt="Image">
+                                                </a>
                                             </div>
-                                            <div class="columns">
-                                                <div class="column is-full"><p>${review['review']}</p></div>
+                                            <div class="media-content">
+                                                <div class="content">
+                                                    <p>
+                                                        <strong>${review['nickname']}</strong> <small>@${review['username']}</small> <small>${time_text}</small>
+                                                        <br>${review['star']}<br>
+                                                        ${review['review']}
+                                                    </p>
+                                                </div>
                                             </div>
-                                     </div>`
+                                        </article>
+                                    </div>`
 
                         $("#trashcan-review-box").append(temp_html)
 
@@ -157,40 +171,40 @@
         </div>
         {# 리뷰 작성 폼#}
         {% if user_info %}
-        <div class="box">
-            <h2 class="m-1">리뷰 작성</h2>
-            <div class="columns m-1">
-                <div class="column is-4">
-                    <!-- 점수 체크-->
-                    <div class="select is-normal" id="select-rate">
+            <div class="box">
+                <h2 class="m-1">리뷰 작성</h2>
+                <div class="columns m-1">
+                    <div class="column is-4">
+                        <!-- 점수 체크-->
+                        <div class="select is-normal" id="select-rate">
+                            <label>
+                                <select>
+                                    <option>별점</option>
+                                    <option>⭐⭐⭐⭐⭐</option>
+                                    <option>⭐⭐⭐⭐</option>
+                                    <option>⭐⭐⭐</option>
+                                    <option>⭐⭐</option>
+                                    <option>⭐</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="column is-8">
+                        <!-- 리뷰 입력-->
                         <label>
-                            <select>
-                                <option>별점</option>
-                                <option>⭐⭐⭐⭐⭐</option>
-                                <option>⭐⭐⭐⭐</option>
-                                <option>⭐⭐⭐</option>
-                                <option>⭐⭐</option>
-                                <option>⭐</option>
-                            </select>
+                            <input class="input is-normal" type="text" placeholder="리뷰를 입력하세요." id="input-review">
                         </label>
                     </div>
                 </div>
-                <div class="column is-8">
-                    <!-- 리뷰 입력-->
-                    <label>
-                        <input class="input is-normal" type="text" placeholder="리뷰를 입력하세요." id="input-review">
-                    </label>
+                <div class="columns">
+                    <div class="column is-three-quarters">
+                    </div>
+                    <div class="is-one-quarter">
+                        <a class="button is-sparta" onclick="add_review()">리뷰 남기기</a>
+                    </div>
                 </div>
-            </div>
-            <div class="columns">
-                <div class="column is-three-quarters">
-                </div>
-                <div class="is-one-quarter">
-                    <a class="button is-sparta" onclick="add_review()">리뷰 남기기</a>
-                </div>
-            </div>
 
-        </div>
+            </div>
         {% endif %}
         {# 리뷰 리스트 #}
         <div class="box" id="trashcan-review-box"></div>

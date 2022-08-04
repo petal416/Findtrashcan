@@ -192,6 +192,7 @@ def add_review():
 
         doc = {
             "username": user_info["username"],
+            "nickname": user_info["nickname"],
             "trashcan": trashcan_receive,
             "star": star_receive,
             "review": review_receive,
