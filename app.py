@@ -14,6 +14,7 @@ ca = certifi.where()
 client = MongoClient('mongodb+srv://test:sparta@cluster0.72mx2.mongodb.net/Cluster0?retryWrites=true&w=majority',
                      tlsCAFile=ca)
 db = client.Findtrashcan
+
 SECRET_KEY = 'SPARTA'
 
 
@@ -62,8 +63,8 @@ def sign_in():
     # ID, PW 매칭 여부 확인
     if result is not None:
         payload = {
-         'id': username_receive,
-         'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+            'id': username_receive,
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
         }
         # JWT 토큰 발행
         # .decode('utf-8')삭제 -> 이미 decode가 됐기 때문에 decode 할게 없음
@@ -83,12 +84,12 @@ def sign_up():
     nickname_receive = request.form['nickname_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     doc = {
-        "username": username_receive,                               # 아이디
-        "password": password_hash,                                  # 비밀번호
-        "nickname": nickname_receive,                               # 닉네임
-        "profile_pic": "",                                          # 프로필 사진 파일 이름
-        "profile_pic_real": "profile_pics/profile_placeholder.png", # 프로필 사진 기본 이미지
-        "profile_info": ""                                          # 프로필 한 마디
+        "username": username_receive,  # 아이디
+        "password": password_hash,  # 비밀번호
+        "nickname": nickname_receive,  # 닉네임
+        "profile_pic": "",  # 프로필 사진 파일 이름
+        "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
+        "profile_info": ""  # 프로필 한 마디
     }
     # ID, PW 서버로 저장
     db.users.insert_one(doc)
@@ -126,14 +127,13 @@ def save_img():
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
             file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/"+file_path)
+            file.save("./static/" + file_path)
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
-        db.users.update_one({'username': payload['id']}, {'$set':new_doc})
+        db.users.update_one({'username': payload['id']}, {'$set': new_doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
-
 
 
 @app.route("/detail/<address>")
@@ -159,7 +159,7 @@ def user(username):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        status = (username == payload["id"])    # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
         user_info = db.users.find_one({"username": username}, {"_id": False})
         return render_template('user.html', user_info=user_info, status=status)
@@ -230,17 +230,6 @@ def get_reviews_trashcan():
 
     return jsonify({"result": "success", "reviews": trashcan_reviews})
 
-
-@app.route("", methods=['POST'])
-def update_favorite():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]})
-        trashcan_receive = request.form["trashcan_give"]
-        type_receive = request.form["type_give"]
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
