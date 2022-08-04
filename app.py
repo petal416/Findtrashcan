@@ -32,14 +32,13 @@ def home():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.users.find_one({"username": payload['id']})
         return render_template('index.html', trashcan_list=all_trashcan, gu_list=gu_list,
-                               user_info=user_info, msg=None)
+                            user_info=user_info, msg=None)
     except jwt.ExpiredSignatureError:
         return render_template('index.html', trashcan_list=all_trashcan, gu_list=gu_list,
                                user_info=None, msg="로그인 시간이 만료 되었습니다.")
     except jwt.exceptions.DecodeError:
         return render_template('index.html', trashcan_list=all_trashcan, gu_list=gu_list,
                                user_info=None, msg=None)
-
 
 
 @app.route('/login')
@@ -63,8 +62,8 @@ def sign_in():
     # ID, PW 매칭 여부 확인
     if result is not None:
         payload = {
-         'id': username_receive,
-         'exp': datetime.utcnow() + timedelta(seconds=30)  # 로그인 24시간 유지
+            'id': username_receive,
+            'exp': datetime.utcnow() + timedelta(seconds=30)  # 로그인 24시간 유지
         }
         # JWT 토큰 발행
         # .decode('utf-8')삭제 -> 이미 decode가 됐기 때문에 decode 할게 없음
@@ -155,7 +154,7 @@ def detailInfo(address):
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.users.find_one({"username": payload['id']})
         return render_template("detail.html", address=address, data=json.dumps(data),
-                                user_info=user_info)
+                               user_info=user_info)
     except jwt.ExpiredSignatureError:
         return render_template("detail.html", address=address, data=json.dumps(data),
                                user_info=None, msg="로그인 시간이 만료 되었습니다.")
