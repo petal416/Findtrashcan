@@ -209,9 +209,8 @@
                         //token을 받아서 browser cookie로 저장 (cookie = browser의 DB와 같은 뜻)
                         //browser에 Key value의 형태로 저장
                         $.cookie('mytoken', response['token'], {path: '/'});
-                        //window.history.back()
-                        //window.location.reload()
-                        window.location.replace('/')
+                        //document.referrer : 이전 페이지의 url
+                        window.location.href = document.referrer;
                     } else {
                         alert(response['msg'])
                     }
