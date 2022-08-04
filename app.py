@@ -32,7 +32,7 @@ def home():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.users.find_one({"username": payload['id']})
         return render_template('index.html', trashcan_list=all_trashcan, gu_list=gu_list,
-                            user_info=user_info, msg=None)
+                               user_info=user_info, msg=None)
     except jwt.ExpiredSignatureError:
         return render_template('index.html', trashcan_list=all_trashcan, gu_list=gu_list,
                                user_info=None, msg="로그인 시간이 만료 되었습니다.")
@@ -63,7 +63,7 @@ def sign_in():
     if result is not None:
         payload = {
             'id': username_receive,
-            'exp': datetime.utcnow() + timedelta(seconds=30)  # 로그인 24시간 유지
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 1)  # 로그인 24시간 유지
         }
         # JWT 토큰 발행
         # .decode('utf-8')삭제 -> 이미 decode가 됐기 때문에 decode 할게 없음
@@ -95,7 +95,7 @@ def sign_up():
     return jsonify({'result': 'success'})
 
 
-# ID 중복확인
+# ID 중복 확인
 @app.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
     # DB에서 username을 받는다.
@@ -136,7 +136,7 @@ def save_img():
 
 
 @app.route("/detail/<address>")
-def detailInfo(address):
+def detail_info(address):
     address_list = address.split(' ')
     gu = address_list[0]
     ro = address_list[1]
