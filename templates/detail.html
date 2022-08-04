@@ -21,7 +21,7 @@
 
 {% block script %}
     <script>
-        let database = {{ data | safe }}
+        let database = {{ data | safe }};
         let y_cen = database['mapy']   // lat
         let x_cen = database['mapx']  // long
         let map
@@ -190,7 +190,6 @@
 
         </div>
         <div class="box" id="trashcan-review-box">
-            {{ "쓰레기통" }} 리뷰 리스트
         </div>
 
     </section>

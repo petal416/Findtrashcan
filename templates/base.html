@@ -4,7 +4,7 @@
     <!-- Webpage Title -->
     <title>
         {% block title %}
-        TITLE
+            TITLE
         {% endblock %}
     </title>
     <!--    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">-->
@@ -44,8 +44,8 @@
 
 <section class="hero is-white" id="hero-header">
     <div class="hero-body has-text-centered header-box">
-        <h1 class="title is-trashcan">Find Trashcan</h1>
-        <h3 class="subtitle is-trashcan">세상을 깨끗하게</h3>
+        <h1 class="title is-sparta">Find Trashcan</h1>
+        <h3 class="subtitle is-sparta">세상을 깨끗하게</h3>
     </div>
 </section>
 
@@ -54,7 +54,7 @@
         <div class="navbar-brand" id="nav-logo">
             <a class="navbar-item" href="/">
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="logo">
-                <strong style="font-size: larger;">FindTrashcan</strong>
+                <strong class="is-sparta" style="font-size: larger;">FindTrashcan</strong>
             </a>
         </div>
         <div class="navbar-end" id="nav-login">
@@ -62,8 +62,8 @@
                 <div class="field is-grouped">
                     <p class="control">
                         {% if user_info %}
-                            <a class="button" href="#"><span>마이페이지</span></a>
-                            <a class="button" href="#"><span>로그아웃</span></a>
+                            <a class="button" href="/user/{{ user_info.username }}"><span>마이페이지</span></a>
+                            <a class="button" onclick="logout()"><span>로그아웃</span></a>
                         {% else %}
                             <a class="button" href="/login"><span>로그인</span></a>
                         {% endif %}
@@ -72,7 +72,7 @@
             </div>
         </div>
     </div>
-    </div>
+
 </nav>
 {% block content %}
 {% endblock %}
