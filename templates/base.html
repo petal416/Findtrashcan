@@ -61,10 +61,12 @@
             <div class="navbar-item">
                 <div class="field is-grouped">
                     <p class="control">
-                        <a class="button" href="/login"><span>회원가입</span></a>
-                    </p>
-                    <p class="control">
-                        <a class="button" href="/login"><span>로그인</span></a>
+                        {% if user_info %}
+                            <a class="button" href="#"><span>마이페이지</span></a>
+                            <a class="button" href="#"><span>로그아웃</span></a>
+                        {% else %}
+                            <a class="button" href="/login"><span>로그인</span></a>
+                        {% endif %}
                     </p>
                 </div>
             </div>
