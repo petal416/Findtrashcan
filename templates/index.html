@@ -38,6 +38,10 @@
 
 {% block script %}
     <script>
+        {% if msg %}
+            console.log("{{ msg }}")
+        {% endif %}
+
         let y_cen = 37.5821148   // lat
         let x_cen = 126.9709607  // long
         let map;
@@ -169,7 +173,7 @@
                         let address_info = address.split('/')[2]
                         let tmp_html = `
                                 <div class="infowindow">
-                                    <h1><a href="${address}">${address_info}</a></h1>
+                                    <h1><a href="${address}"><b>${address_info}</b></a></h1>
                                 </div>
                                 `
                         infoWindow.setContent(tmp_html)
@@ -182,7 +186,7 @@
                     let address_info = address.split('/')[2]
                     let tmp_html = `
                                 <div class="infowindow">
-                                    <h1><a href="${address}">${address_info}</a></h1>
+                                    <h1><a href="${address}"><b>${address_info}</b></a></h1>
                                 </div>
                                 `
                     infoWindow.setContent(tmp_html)

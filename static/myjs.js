@@ -42,7 +42,7 @@ function get_reviews(username) {
 }
 
 function logout() {
-    $.removeCookie('mytoken');
+    $.removeCookie('mytoken',{path: '/'});
     alert('로그아웃!')
     window.location.href = '/'
 }

@@ -16,6 +16,19 @@
             height: 30vh;
             margin: 20px 20px 20px auto;
         }
+
+        #trashcan-review-box{
+            font-family: 'Gamja Flower', cursive;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        #trashcan-review-label{
+            font-family: 'Gamja Flower', cursive;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
     </style>
 {% endblock %}
 
@@ -151,14 +164,14 @@
             <div class="address-box">
                 <div id="map"></div>
                 <div>
-                    <h3>주소 : {{ address }}</h3>
+                    <h3><b>주소 : {{ address }}</b></h3>
                 </div>
             </div>
         </div>
         {# 리뷰 작성 폼#}
         {% if user_info %}
         <div class="box">
-            <h2 class="m-1">리뷰 작성</h2>
+            <h2 class="m-1" id="trashcan-review-label">리뷰 작성</h2>
             <div class="columns m-1">
                 <div class="column is-4">
                     <!-- 점수 체크-->
