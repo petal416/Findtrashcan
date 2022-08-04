@@ -20,13 +20,22 @@ footer {
 /*    min-height: 50vh;*/
 /*}*/
 
+#title{
+    /*font-family: 'Gamja Flower', cursive;*/
+    background-image: url("title_logo.png");
+    background-size: cover;
+    background-position: center;
+
+    height: 95%;
+    max-height: 500px;
+}
+
 .title {
     font-weight: 800;
-    font-size: 5rem;
+    font-size: 7rem;
 }
 
 .subtitle {
-    font-family: 'Gamja Flower', cursive;
     font-size: 2rem;
 }
 

@@ -9,9 +9,11 @@
     </title>
     <!--    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">-->
     <!--    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">-->
-    <meta property="og:title" content="여기 버려"/>
-    <meta property="og:description" content="mini project"/>
+    <meta property="og:title" content="여기 버려!"/>
+    <meta property="og:description" content="세상을 깨끗하게"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -43,11 +45,10 @@
 </head>
 <body>
 
-<section class="hero is-white" id="hero-header">
+<section class="hero is-large" id="hero-header">
     <div class="hero-body has-text-centered header-box">
         <a href="/">
-            <h1 class="title is-sparta">Find Trashcan</h1>
-            <h3 class="subtitle is-sparta">세상을 깨끗하게</h3>
+            <div class="title is-sparta" id="title"></div>
         </a>
     </div>
 </section>
@@ -57,7 +58,7 @@
         <div class="navbar-brand" id="nav-logo">
             <a class="navbar-item" href="/">
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="logo">
-                <strong class="is-sparta" style="font-size: larger;">FindTrashcan</strong>
+                <strong class="is-sparta" style="font-size: larger;">여기 버려!</strong>
             </a>
         </div>
         <div class="navbar-end" id="nav-login">
