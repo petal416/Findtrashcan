@@ -155,6 +155,8 @@
                 </div>
             </div>
         </div>
+        {# 리뷰 작성 폼#}
+        {% if user_info %}
         <div class="box">
             <h2 class="m-1">리뷰 작성</h2>
             <div class="columns m-1">
@@ -189,8 +191,9 @@
             </div>
 
         </div>
-        <div class="box" id="trashcan-review-box">
-        </div>
+        {% endif %}
+        {# 리뷰 리스트 #}
+        <div class="box" id="trashcan-review-box"></div>
 
     </section>
 
